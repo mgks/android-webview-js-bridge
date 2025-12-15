@@ -1,0 +1,90 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
+}
+
+android {
+    // Dynamic Namespace: dev.mgks.swv.template.library
+    namespace "${LIB_GROUP_ID}.${LIB_ARTIFACT_ID.replace('-', '.')}"
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 24
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+}
+
+// =========================================================
+// PUBLISHING LOGIC (DO NOT EDIT UNLESS NECESSARY)
+// =========================================================
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = LIB_GROUP_ID
+                artifactId = LIB_ARTIFACT_ID
+                version = LIB_VERSION
+
+                pom {
+                    name = LIB_NAME
+                    description = LIB_DESCRIPTION
+                    url = LIB_URL
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url = 'http://opensource.org/licenses/MIT'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'mgks'
+                            name = 'Ghazi Khan'
+                            email = 'hello@mgks.dev'
+                        }
+                    }
+                    scm {
+                        connection = "scm:git:${LIB_URL}.git"
+                        developerConnection = "scm:git:ssh://${LIB_URL}.git"
+                        url = LIB_URL
+                    }
+                }
+            }
+        }
+
+        // Publish to GitHub Packages (if running on Actions)
+        repositories {
+            if (System.getenv("GITHUB_ACTOR") != null) {
+                maven {
+                    name = "GitHubPackages"
+                    url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY")}")
+                    credentials {
+                        username = System.getenv("GITHUB_ACTOR")
+                        password = System.getenv("GITHUB_TOKEN")
+                    }
+                }
+            }
+        }
+    }
+}
