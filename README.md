@@ -1,38 +1,71 @@
-# Android Library Template 📦
+# Android Smart JS Bridge
 
-A Golden Template for creating and publishing Android Libraries (Kotlin) with automatic JitPack and GitHub Packages support.
+[![](https://jitpack.io/v/mgks/android-webview-js-bridge.svg)](https://jitpack.io/#mgks/android-webview-js-bridge)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## 🚀 How to use this template
+A lightweight, two-way, **Promise-based** bridge between Android (Kotlin/Java) and JavaScript in WebViews.
 
-### 1. Clone & Rename
-1.  Click **"Use this template"** on GitHub to create a new repo (e.g., `android-biometric-gate`).
-2.  Clone your new repo.
+It solves the problem of getting data *back* from asynchronous calls.
 
-### 2. Configure Identity
-Open `gradle.properties` and edit the library details:
+Extracted from the core of **[Android Smart WebView](https://github.com/mgks/Android-SmartWebView)**.
 
-```bash
-LIB_ARTIFACT_ID=biometric-gate
-LIB_VERSION=1.0.0
-LIB_NAME=Android Biometric Gate
-LIB_DESCRIPTION=Secure biometric auth...
-LIB_URL=https://github.com/mgks/android-biometric-gate
+<img src="https://github.com/mgks/android-webview-js-bridge/blob/main/preview.gif?raw=true" width="200">
+
+## Features
+*   🔄 **Two-Way:** Call Kotlin from JS, and JS from Kotlin.
+*   🤝 **Promises:** JS calls return a `Promise`. No more callback hell.
+*   ⚡ **Zero Dependencies:** Uses standard `JSONObject`. Lightweight.
+*   ✅ **Clean API:** `register()` and `call()` methods on both sides.
+
+## Installation (JitPack)
+
+```groovy
+implementation 'com.github.mgks:android-webview-js-bridge:1.0.0'
 ```
 
-### 3. Refactor Package
-1.  Open the project in Android Studio.
-2.  Go to `library/src/main/java/dev/mgks/swv/placeholder`.
-3.  Right-click `placeholder` -> **Refactor** -> **Rename**.
-4.  Rename it to your library name (e.g., `biometric`).
-5.  Android Studio will update all package references.
+## Usage
 
-### 4. Write Code
-*   Add your library code in the `library` module.
-*   Add permissions/manifest entries in `library/src/main/AndroidManifest.xml`.
-*   Use the `app` module to test your library (Edit `app/src/main/java/.../MainActivity.kt`).
+### 1. Initialize
+```kotlin
+val bridge = SwvJsBridge(webView)
 
-### 5. Publish
-1.  Push your changes.
-2.  Create a **Release** on GitHub (tag `v1.0.0`).
-3.  The Action will auto-publish to GitHub Packages.
-4.  JitPack will auto-pickup the release.
+webView.webViewClient = object : WebViewClient() {
+    override fun onPageFinished(view: WebView?, url: String?) {
+        bridge.injectJsShim() // Ensure JS is ready
+    }
+}
+```
+
+### 2. JavaScript calls Kotlin
+**Kotlin:**
+```kotlin
+bridge.register("getUserInfo") { data, callback ->
+    // Do work...
+    callback.resolve("Ghazi Khan")
+}
+```
+**JavaScript:**
+```javascript
+window.SmartBridge.call("getUserInfo").then(name => {
+    console.log("User is:", name);
+});
+```
+
+### 3. Kotlin calls JavaScript
+**JavaScript:**
+```javascript
+window.SmartBridge.register("updateTitle", (data) => {
+    document.title = data.newTitle;
+    return "Title Updated!";
+});
+```
+**Kotlin:**
+```kotlin
+val data = mapOf("newTitle" to "Hello World")
+bridge.callJs("updateTitle", JSONObject(data)) { result ->
+    Log.d("Bridge", "JS finished: $result")
+}
+```
+
+## License
+MIT License
