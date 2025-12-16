@@ -4,45 +4,41 @@ plugins {
     id 'maven-publish'
 }
 
+// Read versions from gradle.properties
+def compileSdkVer = project.ANDROID_COMPILE_SDK.toInteger()
+def minSdkVer = project.ANDROID_MIN_SDK.toInteger()
+def javaVer = JavaVersion.toVersion(project.JAVA_VERSION)
+
 android {
-    // Dynamic Namespace: dev.mgks.swv.template.library
     namespace "${LIB_GROUP_ID}.${LIB_ARTIFACT_ID.replace('-', '.')}"
-    compileSdk 34
+    compileSdk compileSdkVer
 
     defaultConfig {
-        minSdk 24
+        minSdk minSdkVer
         consumerProguardFiles "consumer-rules.pro"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+    // Modern Java 17 Support
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility javaVer
+        targetCompatibility javaVer
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = javaVer.toString()
     }
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
 }
 
-// =========================================================
-// PUBLISHING LOGIC (DO NOT EDIT UNLESS NECESSARY)
-// =========================================================
+// Publishing Block (Standardized)
 afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
                 from components.release
-
                 groupId = LIB_GROUP_ID
                 artifactId = LIB_ARTIFACT_ID
                 version = LIB_VERSION
@@ -72,8 +68,6 @@ afterEvaluate {
                 }
             }
         }
-
-        // Publish to GitHub Packages (if running on Actions)
         repositories {
             if (System.getenv("GITHUB_ACTOR") != null) {
                 maven {
