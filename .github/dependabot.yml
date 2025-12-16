@@ -1,14 +1,24 @@
 version: 2
 updates:
-  # Maintain Gradle dependencies
+  # 1. Android/Gradle Dependencies
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Kolkata"
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
-  # Maintain GitHub Actions versions
+  # 2. GitHub Actions (Workflows)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
+    groups:
+      all-actions:
+        patterns:
+          - "*"
