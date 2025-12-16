@@ -1,6 +1,5 @@
 version: 2
 updates:
-  # 1. Android/Gradle Dependencies
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
@@ -12,8 +11,12 @@ updates:
       all-dependencies:
         patterns:
           - "*"
+    # 🛑 IGNORE UNSTABLE VERSIONS
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"] # Stop major jumps (e.g. 8.0 -> 9.0) if you want safety
+        versions: ["*[a-zA-Z]*"] # Ignore anything with letters (alpha, beta, rc, milestone)
 
-  # 2. GitHub Actions (Workflows)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
