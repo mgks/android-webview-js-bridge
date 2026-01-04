@@ -3,19 +3,17 @@
 [![](https://jitpack.io/v/mgks/android-webview-js-bridge.svg)](https://jitpack.io/#mgks/android-webview-js-bridge)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A lightweight, two-way, **Promise-based** bridge between Android (Kotlin/Java) and JavaScript in WebViews.
-
-It solves the problem of getting data *back* from asynchronous calls.
+A lightweight, two-way, **Promise-based** bridge between Android (Kotlin/Java) and JavaScript in WebViews. It solves the problem of getting data *back* from asynchronous calls.
 
 Extracted from the core of **[Android Smart WebView](https://github.com/mgks/Android-SmartWebView)**.
 
 <img src="https://github.com/mgks/android-webview-js-bridge/blob/main/preview.gif?raw=true" width="200">
 
 ## Features
-*   🔄 **Two-Way:** Call Kotlin from JS, and JS from Kotlin.
-*   🤝 **Promises:** JS calls return a `Promise`. No more callback hell.
-*   ⚡ **Zero Dependencies:** Uses standard `JSONObject`. Lightweight.
-*   ✅ **Clean API:** `register()` and `call()` methods on both sides.
+*   **Two-Way:** Call Kotlin from JS, and JS from Kotlin.
+*   **Promises:** JS calls return a `Promise`. No more callback hell.
+*   **Zero Dependencies:** Uses standard `JSONObject`. Lightweight.
+*   **Clean API:** `register()` and `call()` methods on both sides.
 
 ## Installation (JitPack)
 
@@ -68,4 +66,8 @@ bridge.callJs("updateTitle", JSONObject(data)) { result ->
 ```
 
 ## License
-MIT License
+MIT
+
+> **{ github.com/mgks }**
+> 
+> ![Website Badge](https://img.shields.io/badge/Visit-mgks.dev-blue?style=flat&link=https%3A%2F%2Fmgks.dev) ![Sponsor Badge](https://img.shields.io/badge/%20%20Become%20a%20Sponsor%20%20-red?style=flat&logo=github&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fmgks)
